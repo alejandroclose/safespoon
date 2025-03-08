@@ -6,18 +6,11 @@ import { Clock, ShieldCheck, RefreshCw, FileText, ChevronRight } from "lucide-re
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Header - simplified */}
+      {/* Header - fixed container width */}
       <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/80 backdrop-blur">
-        <div className="container flex h-16 items-center justify-between">
+        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
-            <Image
-              src="/placeholder.svg?height=28&width=28"
-              alt="AllergenMenu Logo"
-              width={28}
-              height={28}
-              className="rounded"
-            />
-            <span className="text-lg font-medium">AllergenMenu</span>
+            <span className="text-lg font-medium">SafeSpoon 🥄</span>
           </div>
           <nav className="hidden md:flex items-center gap-8">
             <Link href="/" className="text-sm text-gray-600 hover:text-gray-900">
@@ -61,14 +54,14 @@ export default function Home() {
       </header>
 
       <main className="flex-1">
-        {/* Hero Section - refined spacings and cleaner layout */}
+        {/* Hero Section - fixed container width */}
         <section className="w-full py-16 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="grid gap-8 lg:grid-cols-[1fr_450px] lg:gap-12 xl:grid-cols-[1fr_550px] items-center">
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
                   <h1 className="text-3xl font-medium tracking-tight sm:text-4xl xl:text-5xl">
-                    Create Professional Allergen Menus in Minutes
+                    Create a Professional Allerge Menu in Minutes
                   </h1>
                   <p className="max-w-[520px] text-gray-500 md:text-lg">
                     Meet compliance requirements and keep your guests safe with clear, professional allergen
@@ -98,11 +91,11 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Key Benefits Section - more minimalistic cards */}
+        {/* Key Benefits Section - fixed container width */}
         <section id="features" className="w-full py-16 md:py-24 bg-gray-50">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col items-center justify-center space-y-3 text-center mb-12">
-              <h2 className="text-2xl font-medium tracking-tight md:text-3xl">Why Choose AllergenMenu?</h2>
+              <h2 className="text-2xl font-medium tracking-tight md:text-3xl">Why Choose Safe Spoon?</h2>
               <p className="mx-auto max-w-[600px] text-gray-500 md:text-lg">
                 Our platform makes it easy to create professional allergen menus that keep your customers safe and
                 your business compliant.
@@ -137,9 +130,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* How It Works - cleaner steps */}
+        {/* How It Works - fixed container width */}
         <section id="how-it-works" className="w-full py-16 md:py-24">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col items-center justify-center space-y-3 text-center mb-12">
               <h2 className="text-2xl font-medium tracking-tight md:text-3xl">How It Works</h2>
               <p className="mx-auto max-w-[600px] text-gray-500 md:text-lg">
@@ -183,9 +176,9 @@ export default function Home() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-base font-medium text-gray-900">
                   3
                 </div>
-                <h3 className="text-lg font-medium">Download & Share</h3>
+                <h3 className="text-lg font-medium">Share</h3>
                 <p className="text-center text-gray-500 text-sm">
-                  Download your custom allergen menu and share with customers
+                  Share your custom allergen menu with customers
                 </p>
                 <div className="relative w-full aspect-video mt-2 overflow-hidden rounded-lg border border-gray-200">
                   <Image
@@ -205,9 +198,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Testimonials Section - cleaner cards */}
-        <section className="w-full py-16 md:py-24 bg-gray-50">
-          <div className="container px-4 md:px-6">
+        {/* Testimonials Section - fixed container width */}
+        {/* <section className="w-full py-16 md:py-24 bg-gray-50">
+          <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col items-center justify-center space-y-3 text-center mb-12">
               <h2 className="text-2xl font-medium tracking-tight md:text-3xl">What Our Users Say</h2>
               <p className="mx-auto max-w-[600px] text-gray-500 md:text-lg">
@@ -217,7 +210,7 @@ export default function Home() {
             <div className="mx-auto grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-2">
               <div className="flex flex-col space-y-4 rounded-lg border border-gray-100 bg-white p-6">
                 <p className="text-gray-600">
-                  "AllergenMenu has saved us so much time and helped us provide clear information to our guests with
+                  "Safe Spoon has saved us so much time and helped us provide clear information to our guests with
                   dietary restrictions. Our customers appreciate the transparency, and we've seen increased confidence
                   from diners with allergies."
                 </p>
@@ -237,7 +230,7 @@ export default function Home() {
               </div>
               <div className="flex flex-col space-y-4 rounded-lg border border-gray-100 bg-white p-6">
                 <p className="text-gray-600">
-                  "Creating allergen menus used to be a headache for our staff. With AllergenMenu, we can update our
+                  "Creating allergen menus used to be a headache for our staff. With Safe Spoon, we can update our
                   information quickly and provide professional-looking menus that keep our customers safe and our
                   business compliant."
                 </p>
@@ -257,11 +250,11 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
-        {/* Sample Menu Preview - cleaner styling */}
+        {/* Sample Menu Preview - fixed container width */}
         <section className="w-full py-16 md:py-24">
-          <div className="container px-4 md:px-6">
+          <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col items-center justify-center space-y-3 text-center mb-10">
               <h2 className="text-2xl font-medium tracking-tight md:text-3xl">
                 See What Your Menu Could Look Like
@@ -290,18 +283,18 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Footer - more subtle styling */}
+      {/* Footer - fixed container width */}
       <footer className="w-full border-t border-gray-100 py-8">
-        <div className="container flex flex-col items-center justify-between gap-4 md:h-16 md:flex-row">
+        <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-between gap-4 md:h-16 md:flex-row">
           <div className="flex items-center gap-2">
             <Image
               src="/placeholder.svg?height=24&width=24"
-              alt="AllergenMenu Logo"
+              alt="Safe Spoon Logo"
               width={24}
               height={24}
               className="rounded"
             />
-            <span className="text-base font-medium">AllergenMenu</span>
+            <span className="text-base font-medium">Safe Spoon</span>
           </div>
           <div className="flex gap-6">
             <Link href="/contact" className="text-sm text-gray-500 hover:text-gray-900">

@@ -27,7 +27,7 @@ export default function Home() {
             </Link>
           </nav>
           <div>
-            <Button asChild className="hidden md:inline-flex rounded-md px-4">
+            <Button asChild className="hidden md:inline-flex bg-teal-900 hover:bg-teal-700 rounded-md px-4">
               <Link href="/signup">Create Free Menu</Link>
             </Button>
             <Button variant="ghost" size="icon" className="md:hidden">
@@ -61,7 +61,7 @@ export default function Home() {
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
                   <h1 className="text-3xl font-medium tracking-tight sm:text-4xl xl:text-5xl">
-                    Create a Professional Allerge Menu in Minutes
+                    Create a Professional Allergen Menu in Minutes
                   </h1>
                   <p className="max-w-[520px] text-gray-500 md:text-lg">
                     Meet compliance requirements and keep your guests safe with clear, professional allergen
@@ -69,7 +69,7 @@ export default function Home() {
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                  <Button asChild size="lg" className="rounded-md px-5">
+                  <Button asChild size="lg" className="rounded-md px-5 bg-teal-900 hover:bg-teal-700">
                     <Link href="/signup">Get Started</Link>
                   </Button>
                   <Button asChild variant="outline" size="lg" className="rounded-md px-5">
@@ -191,7 +191,7 @@ export default function Home() {
               </div>
             </div>
             <div className="flex justify-center mt-10">
-              <Button asChild size="lg" className="rounded-md px-6">
+              <Button asChild size="lg" className="rounded-md px-6 bg-teal-900 hover:bg-teal-700">
                 <Link href="/signup">Create Your Free Menu</Link>
               </Button>
             </div>
@@ -274,7 +274,7 @@ export default function Home() {
                 />
               </div>
               <div className="flex justify-center mt-10">
-                <Button asChild size="lg" className="rounded-md px-6">
+                <Button asChild size="lg" className="rounded-md px-6 bg-teal-900 hover:bg-teal-700">
                   <Link href="/signup">Create Your Own Menu</Link>
                 </Button>
               </div>

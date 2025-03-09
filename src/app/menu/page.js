@@ -115,6 +115,7 @@ export default function MenuTemplate() {
   const [selectedAllergens, setSelectedAllergens] = useState([])
   const [hideAllergenic, setHideAllergenic] = useState(false)
   const [filteredItems, setFilteredItems] = useState(menuItems)
+  const [showAllergenPolicy, setShowAllergenPolicy] = useState(false)
 
   // Toggle allergen selection
   const toggleAllergen = (allergenId) => {
@@ -184,6 +185,20 @@ export default function MenuTemplate() {
           <p className="text-sm text-gray-500 mt-1">Last Updated: {currentDate}</p>
         </div>
 
+        {/*  Allergen Policy */}
+        <div className="p-6 bg-stone-50 rounded-md">
+        <h4 className="text-base font-medium">Allergen Policy</h4>     
+            <div className="mt-2 text-sm text-gray-500">
+              <p>
+                At Restaurant Name, we are committed to accommodating guests with food allergies and dietary restrictions.
+                Please inform your server of any allergies before ordering. Our kitchen staff will take extra precautions
+                when preparing your meal, but please be aware that we cannot guarantee a completely allergen-free
+                environment as items are prepared in a kitchen where cross-contamination with allergens may
+                occur.
+              </p>
+            </div>
+        </div>
+
         {/* Allergen Filter Section - cleaner UI */}
         <div className="p-6 border-b border-stone-100 bg-stone-50">
           <h3 className="text-base font-medium mb-4">Personalize Your Menu</h3>
@@ -231,31 +246,7 @@ export default function MenuTemplate() {
           </div>
         </div>
 
-        {/* Cross-Contamination Warning - more subtle */}
-        <div className="p-6 border-b border-gray-100">
-          <div className="space-y-3">
-            <div className="p-3 bg-stone-50 rounded-md">
-              <h4 className="text-sm font-medium mb-1">Cross-Contamination Warning</h4>
-              <p className="text-sm text-gray-500">
-                Items marked with an asterisk (*) are prepared in a kitchen where cross-contamination with allergens may
-                occur. While we take precautions to minimize risk, we cannot guarantee that any menu item is completely
-                free of allergens.
-              </p>
-            </div>
-
-            <div className="p-3 bg-stone-50 rounded-md">
-              <h4 className="text-sm font-medium mb-1">Our Allergen Policy</h4>
-              <p className="text-sm text-gray-500">
-                At Restaurant Name, we are committed to accommodating guests with food allergies and dietary restrictions.
-                Please inform your server of any allergies before ordering. Our kitchen staff will take extra precautions
-                when preparing your meal, but please be aware that we cannot guarantee a completely allergen-free
-                environment.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Menu Items Section - cleaner item cards */}
+        {/* Menu Items Section */}
         <div className="p-6">
           {Object.entries(groupedMenuItems).length > 0 ? (
             Object.entries(groupedMenuItems).map(([category, items]) => (
@@ -269,11 +260,10 @@ export default function MenuTemplate() {
                     return (
                       <div
                         key={item.id}
-                        className={`py-3 px-4 rounded-md transition-all ${
-                          hasSelectedAllergens && selectedAllergens.length > 0 
-                            ? "bg-amber-50 ring-1 ring-amber-100" 
-                            : "hover:bg-stone-50"
-                        }`}
+                        className={`py-3 px-4 rounded-md transition-all ${hasSelectedAllergens && selectedAllergens.length > 0
+                          ? "bg-amber-50 ring-1 ring-amber-100"
+                          : "hover:bg-stone-50"
+                          }`}
                       >
                         <div className="flex justify-between items-start">
                           <div className="flex-1">
@@ -284,7 +274,7 @@ export default function MenuTemplate() {
                               </h4>
                               {hasSelectedAllergens && selectedAllergens.length > 0 && !hideAllergenic && (
                                 <span className="ml-2 px-2 py-0.5 bg-amber-100 text-amber-800 text-xs font-medium rounded-full">
-                                  Contains your allergens
+                                  🚨 Allergen Alert
                                 </span>
                               )}
                             </div>
@@ -316,9 +306,8 @@ export default function MenuTemplate() {
                               return (
                                 <div
                                   key={allergenId}
-                                  className={`w-5 h-5 rounded-full ${allergen.color} flex items-center justify-center text-stone-100 font-bold text-xs ${
-                                    isSelected ? "ring-1 ring-offset-1 ring-yellow-400" : ""
-                                  }`}
+                                  className={`w-5 h-5 rounded-full ${allergen.color} flex items-center justify-center text-stone-100 font-bold text-xs ${isSelected ? "ring-1 ring-offset-1 ring-yellow-400" : ""
+                                    }`}
                                   title={allergen.name}
                                 >
                                   {allergen.abbr}
@@ -350,14 +339,12 @@ export default function MenuTemplate() {
           )}
         </div>
 
-        {/* Footer Section - more minimal */}
+        {/* Footer Section */}
         <div className="p-6 bg-stone-50 border-t border-gray-100">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="max-w-md">
               <p className="text-sm text-gray-500 mb-2">
-                <span className="font-medium">Disclaimer:</span> While we make every effort to ensure the accuracy of our allergen
-                information, ingredients and manufacturing processes can change. Customers with food allergies should
-                speak with a manager before ordering.
+                Restaurant description text...
               </p>
               <p className="text-sm text-gray-500">
                 For more detailed allergen information, please contact us at{" "}
@@ -373,7 +360,14 @@ export default function MenuTemplate() {
             </div>
           </div>
         </div>
-      </div>
+      </div >
+              {/* SafeSpoon Simple Disclaimer */}
+              <div className="my-3 p-6 bg-stone-50 rounded-md mb-3">
+          <p className="text-xs text-gray-500">
+            ⚠️ This allergen information is provided directly by the restaurant.
+            SafeSpoon does not verify this information. Always confirm allergens directly with restaurant staff before ordering.
+          </p>
+        </div>
 
       <div className="mt-10 text-center">
         <p className="mb-4 text-gray-500 text-sm">
@@ -383,6 +377,6 @@ export default function MenuTemplate() {
           <Link href="/">Get Started</Link>
         </Button>
       </div>
-    </div>
+    </div >
   )
 }

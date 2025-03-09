@@ -92,7 +92,7 @@ export default function Home() {
         </section>
 
         {/* Key Benefits Section - fixed container width */}
-        <section id="features" className="w-full py-16 md:py-24 bg-gray-50">
+        <section id="features" className="w-full py-16 md:py-24 bg-stone-200">
           <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col items-center justify-center space-y-3 text-center mb-12">
               <h2 className="text-2xl font-medium tracking-tight md:text-3xl">Why Choose Safe Spoon?</h2>
@@ -102,17 +102,17 @@ export default function Home() {
               </p>
             </div>
             <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <div className="flex flex-col items-center space-y-3 rounded-lg border border-gray-100 bg-stone-50 p-6">
+                <ShieldCheck className="h-8 w-8 text-gray-900" />
+                <h3 className="text-lg font-medium">Increase Safety</h3>
+                <p className="text-center text-gray-500 text-sm">Clear allergen labeling keeps your customers safe</p>
+              </div>
               <div className="flex flex-col items-center space-y-3 rounded-lg border border-gray-100 bg-stone-50 p-6">
                 <Clock className="h-8 w-8 text-gray-900" />
                 <h3 className="text-lg font-medium">Save Time</h3>
                 <p className="text-center text-gray-500 text-sm">
                   Create professional allergen menus in minutes, not hours
                 </p>
-              </div>
-              <div className="flex flex-col items-center space-y-3 rounded-lg border border-gray-100 bg-stone-50 p-6">
-                <ShieldCheck className="h-8 w-8 text-gray-900" />
-                <h3 className="text-lg font-medium">Increase Safety</h3>
-                <p className="text-center text-gray-500 text-sm">Clear allergen labeling keeps your customers safe</p>
               </div>
               <div className="flex flex-col items-center space-y-3 rounded-lg border border-gray-100 bg-stone-50 p-6">
                 <RefreshCw className="h-8 w-8 text-gray-900" />
@@ -253,7 +253,7 @@ export default function Home() {
         </section> */}
 
         {/* Sample Menu Preview - fixed container width */}
-        <section className="w-full py-16 md:py-24">
+        <section className="w-full py-16 md:py-24 bg-stone-200">
           <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col items-center justify-center space-y-3 text-center mb-10">
               <h2 className="text-2xl font-medium tracking-tight md:text-3xl">

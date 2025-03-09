@@ -61,11 +61,11 @@ export default function Home() {
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
                   <h1 className="text-3xl font-medium tracking-tight sm:text-4xl xl:text-5xl">
-                    Create a Professional Allergen Menu in Minutes
+                    Dining Confidence for Everyone at Your Table
                   </h1>
                   <p className="max-w-[520px] text-gray-500 md:text-lg">
-                    Keep your guests safe with clear, professional allergen
-                    information. 100% free.
+                    Keep your guests safe with clear allergen
+                    information. <span className="underline-offset-auto">100% free.</span>
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 pt-2">
@@ -287,14 +287,7 @@ export default function Home() {
       <footer className="w-full border-t border-gray-100 py-8">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-between gap-4 md:h-16 md:flex-row">
           <div className="flex items-center gap-2">
-            <Image
-              src="/placeholder.svg?height=24&width=24"
-              alt="Safe Spoon Logo"
-              width={24}
-              height={24}
-              className="rounded"
-            />
-            <span className="text-base font-medium">Safe Spoon</span>
+            SafeSpoon 🥄
           </div>
           <div className="flex gap-6">
             <Link href="/contact" className="text-sm text-gray-500 hover:text-gray-900">

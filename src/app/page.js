@@ -64,7 +64,7 @@ export default function Home() {
                     Create a Professional Allergen Menu in Minutes
                   </h1>
                   <p className="max-w-[520px] text-gray-500 md:text-lg">
-                    Meet compliance requirements and keep your guests safe with clear, professional allergen
+                    Keep your guests safe with clear, professional allergen
                     information. 100% free.
                   </p>
                 </div>
@@ -73,8 +73,8 @@ export default function Home() {
                     <Link href="/signup">Get Started</Link>
                   </Button>
                   <Button asChild variant="outline" size="lg" className="rounded-md px-5">
-                    <Link href="#how-it-works" className="flex items-center">
-                      Learn More
+                    <Link href="/menu" className="flex items-center">
+                      View Sample Menu
                       <ChevronRight className="ml-1 h-4 w-4" />
                     </Link>
                   </Button>
@@ -102,7 +102,7 @@ export default function Home() {
               </p>
             </div>
             <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <div className="flex flex-col items-center space-y-3 rounded-lg border border-gray-100 bg-stone-50 p-6">
+              <div className="flex flex-col items-center space-y-3 rounded-lg border border-gray-100 bg-stone-50 p-6">
                 <ShieldCheck className="h-8 w-8 text-gray-900" />
                 <h3 className="text-lg font-medium">Increase Safety</h3>
                 <p className="text-center text-gray-500 text-sm">Clear allergen labeling keeps your customers safe</p>

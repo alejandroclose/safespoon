@@ -373,7 +373,7 @@ export default function MenuTemplate() {
         <p className="mb-4 text-gray-500 text-sm">
           This is a sample template. Create your own customized allergen menu today!
         </p>
-        <Button asChild size="lg" className="rounded-md px-6">
+        <Button asChild size="lg" className="rounded-md px-6 bg-teal-900">
           <Link href="/">Get Started</Link>
         </Button>
       </div>

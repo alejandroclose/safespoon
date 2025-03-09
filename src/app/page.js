@@ -61,10 +61,10 @@ export default function Home() {
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
                   <h1 className="text-3xl font-medium tracking-tight sm:text-4xl xl:text-5xl">
-                    Dining Confidence for Everyone at Your Table
+                    create your allergen menu in no time.
                   </h1>
                   <p className="max-w-[520px] text-gray-500 md:text-lg">
-                    Keep your guests safe with clear allergen
+                    Keep your guests safe and happy with clear allergen
                     information. <span className="underline-offset-auto">100% free.</span>
                   </p>
                 </div>

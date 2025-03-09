@@ -166,10 +166,10 @@ export default function MenuTemplate() {
   })
 
   return (
-    <div className="container mx-auto px-4 py-12 max-w-3xl">
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+    <div className="container bg-stone-100 mx-auto px-4 py-12 max-w-3xl">
+      <div className="bg-stone-100 rounded-lg shadow-sm overflow-hidden">
         {/* Menu Header - simplified styling */}
-        <div className="p-8 flex flex-col items-center justify-center border-b border-gray-100">
+        <div className="p-8 flex flex-col items-center justify-center border-b border-stone-100">
           <div className="mb-6">
             <Image
               src="/placeholder.svg?height=64&width=64"
@@ -185,7 +185,7 @@ export default function MenuTemplate() {
         </div>
 
         {/* Allergen Filter Section - cleaner UI */}
-        <div className="p-6 border-b border-gray-100 bg-gray-50">
+        <div className="p-6 border-b border-stone-100 bg-stone-50">
           <h3 className="text-base font-medium mb-4">Personalize Your Menu</h3>
           <div className="space-y-5">
             <div>
@@ -200,7 +200,7 @@ export default function MenuTemplate() {
                     className="px-3 py-1 h-8 rounded-md"
                   >
                     <span
-                      className={`w-5 h-5 rounded-full ${allergen.color} mr-1.5 flex items-center justify-center text-white text-[10px] font-bold`}
+                      className={`w-5 h-5 rounded-full ${allergen.color} mr-1.5 flex items-center justify-center text-stone-100 text-[10px] font-bold`}
                     >
                       {allergen.abbr}
                     </span>
@@ -234,7 +234,7 @@ export default function MenuTemplate() {
         {/* Cross-Contamination Warning - more subtle */}
         <div className="p-6 border-b border-gray-100">
           <div className="space-y-3">
-            <div className="p-3 bg-gray-50 rounded-md">
+            <div className="p-3 bg-stone-50 rounded-md">
               <h4 className="text-sm font-medium mb-1">Cross-Contamination Warning</h4>
               <p className="text-sm text-gray-500">
                 Items marked with an asterisk (*) are prepared in a kitchen where cross-contamination with allergens may
@@ -243,7 +243,7 @@ export default function MenuTemplate() {
               </p>
             </div>
 
-            <div className="p-3 bg-gray-50 rounded-md">
+            <div className="p-3 bg-stone-50 rounded-md">
               <h4 className="text-sm font-medium mb-1">Our Allergen Policy</h4>
               <p className="text-sm text-gray-500">
                 At Restaurant Name, we are committed to accommodating guests with food allergies and dietary restrictions.
@@ -260,7 +260,7 @@ export default function MenuTemplate() {
           {Object.entries(groupedMenuItems).length > 0 ? (
             Object.entries(groupedMenuItems).map(([category, items]) => (
               <div key={category} className="mb-8">
-                <h3 className="text-lg font-medium mb-4 pb-2 border-b border-gray-100">{category}</h3>
+                <h3 className="text-lg font-medium mb-4 pb-2 border-b border-stone-300">{category}</h3>
 
                 <div className="space-y-3">
                   {items.map((item) => {
@@ -272,7 +272,7 @@ export default function MenuTemplate() {
                         className={`py-3 px-4 rounded-md transition-all ${
                           hasSelectedAllergens && selectedAllergens.length > 0 
                             ? "bg-amber-50 ring-1 ring-amber-100" 
-                            : "hover:bg-gray-50"
+                            : "hover:bg-stone-50"
                         }`}
                       >
                         <div className="flex justify-between items-start">
@@ -316,7 +316,7 @@ export default function MenuTemplate() {
                               return (
                                 <div
                                   key={allergenId}
-                                  className={`w-5 h-5 rounded-full ${allergen.color} flex items-center justify-center text-white font-bold text-xs ${
+                                  className={`w-5 h-5 rounded-full ${allergen.color} flex items-center justify-center text-stone-100 font-bold text-xs ${
                                     isSelected ? "ring-1 ring-offset-1 ring-yellow-400" : ""
                                   }`}
                                   title={allergen.name}
@@ -351,7 +351,7 @@ export default function MenuTemplate() {
         </div>
 
         {/* Footer Section - more minimal */}
-        <div className="p-6 bg-gray-50 border-t border-gray-100">
+        <div className="p-6 bg-stone-50 border-t border-gray-100">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="max-w-md">
               <p className="text-sm text-gray-500 mb-2">
@@ -366,7 +366,7 @@ export default function MenuTemplate() {
               </p>
             </div>
             <div className="flex flex-col items-center">
-              <div className="bg-white p-3 rounded-lg shadow-sm mb-2">
+              <div className="bg-stone-100 p-3 rounded-lg shadow-sm mb-2">
                 <Image src="/placeholder.svg?height=80&width=80" alt="QR Code" width={80} height={80} />
               </div>
               <p className="text-xs text-center text-gray-500">Scan for digital menu</p>

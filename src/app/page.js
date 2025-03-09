@@ -5,12 +5,12 @@ import { Clock, ShieldCheck, RefreshCw, FileText, ChevronRight } from "lucide-re
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-stone-100">
       {/* Header - fixed container width */}
-      <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/80 backdrop-blur">
+      <header className="sticky top-0 z-50 w-full border-b border-stone-100 bg-stone-100/80 backdrop-blur">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-lg font-medium">SafeSpoon 🥄</span>
+            <span className="text-lg font-bold">SafeSpoon 🥄</span>
           </div>
           <nav className="hidden md:flex items-center gap-8">
             <Link href="/" className="text-sm text-gray-600 hover:text-gray-900">
@@ -102,24 +102,24 @@ export default function Home() {
               </p>
             </div>
             <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-              <div className="flex flex-col items-center space-y-3 rounded-lg border border-gray-100 bg-white p-6">
+              <div className="flex flex-col items-center space-y-3 rounded-lg border border-gray-100 bg-stone-50 p-6">
                 <Clock className="h-8 w-8 text-gray-900" />
                 <h3 className="text-lg font-medium">Save Time</h3>
                 <p className="text-center text-gray-500 text-sm">
                   Create professional allergen menus in minutes, not hours
                 </p>
               </div>
-              <div className="flex flex-col items-center space-y-3 rounded-lg border border-gray-100 bg-white p-6">
+              <div className="flex flex-col items-center space-y-3 rounded-lg border border-gray-100 bg-stone-50 p-6">
                 <ShieldCheck className="h-8 w-8 text-gray-900" />
                 <h3 className="text-lg font-medium">Increase Safety</h3>
                 <p className="text-center text-gray-500 text-sm">Clear allergen labeling keeps your customers safe</p>
               </div>
-              <div className="flex flex-col items-center space-y-3 rounded-lg border border-gray-100 bg-white p-6">
+              <div className="flex flex-col items-center space-y-3 rounded-lg border border-gray-100 bg-stone-50 p-6">
                 <RefreshCw className="h-8 w-8 text-gray-900" />
                 <h3 className="text-lg font-medium">Easy to Update</h3>
                 <p className="text-center text-gray-500 text-sm">Simple to maintain as your menu changes</p>
               </div>
-              <div className="flex flex-col items-center space-y-3 rounded-lg border border-gray-100 bg-white p-6">
+              <div className="flex flex-col items-center space-y-3 rounded-lg border border-gray-100 bg-stone-50 p-6">
                 <FileText className="h-8 w-8 text-gray-900" />
                 <h3 className="text-lg font-medium">Professional</h3>
                 <p className="text-center text-gray-500 text-sm">
@@ -208,7 +208,7 @@ export default function Home() {
               </p>
             </div>
             <div className="mx-auto grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-2">
-              <div className="flex flex-col space-y-4 rounded-lg border border-gray-100 bg-white p-6">
+              <div className="flex flex-col space-y-4 rounded-lg border border-gray-100 bg-stone-50 p-6">
                 <p className="text-gray-600">
                   "Safe Spoon has saved us so much time and helped us provide clear information to our guests with
                   dietary restrictions. Our customers appreciate the transparency, and we've seen increased confidence
@@ -228,7 +228,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-col space-y-4 rounded-lg border border-gray-100 bg-white p-6">
+              <div className="flex flex-col space-y-4 rounded-lg border border-gray-100 bg-stone-50 p-6">
                 <p className="text-gray-600">
                   "Creating allergen menus used to be a headache for our staff. With Safe Spoon, we can update our
                   information quickly and provide professional-looking menus that keep our customers safe and our

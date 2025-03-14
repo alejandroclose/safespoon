@@ -61,7 +61,7 @@ export default function Dashboard() {
         <div className="flex flex-col gap-2">
           <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
           <p className="text-gray-500">
-            Welcome back! Here's an overview of your SafeSpoon activity.
+            Welcome back! This is an overview of your SafeSpoon menus activity.
           </p>
         </div>
 

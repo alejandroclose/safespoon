@@ -1,23 +1,24 @@
+// /src/components/ui/alert-dialog.jsx
 import * as React from "react"
-import * as AlertDialogPrimitive from "@headlessui/react"
+import { Dialog as HeadlessDialog } from "@headlessui/react"
 import { cn } from "@/lib/utils"
 
 const AlertDialog = ({ open, onOpenChange, children }) => {
   return (
-    <AlertDialogPrimitive.Dialog
+    <HeadlessDialog
       open={open}
       onClose={() => onOpenChange(false)}
       className="relative z-50"
     >
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
       {children}
-    </AlertDialogPrimitive.Dialog>
+    </HeadlessDialog>
   )
 }
 
 const AlertDialogContent = React.forwardRef(({ className, children, ...props }, ref) => (
   <div className="fixed inset-0 flex items-center justify-center p-4">
-    <AlertDialogPrimitive.Panel
+    <HeadlessDialog.Panel
       ref={ref}
       className={cn(
         "w-full max-w-md rounded-lg border bg-background p-6 shadow-lg",
@@ -26,7 +27,7 @@ const AlertDialogContent = React.forwardRef(({ className, children, ...props }, 
       {...props}
     >
       {children}
-    </AlertDialogPrimitive.Panel>
+    </HeadlessDialog.Panel>
   </div>
 ))
 AlertDialogContent.displayName = "AlertDialogContent"
@@ -51,7 +52,7 @@ const AlertDialogFooter = ({ className, ...props }) => (
 AlertDialogFooter.displayName = "AlertDialogFooter"
 
 const AlertDialogTitle = React.forwardRef(({ className, ...props }, ref) => (
-  <AlertDialogPrimitive.Title
+  <HeadlessDialog.Title
     ref={ref}
     className={cn("text-lg font-semibold", className)}
     {...props}

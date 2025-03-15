@@ -1,48 +1,40 @@
 // app/api/establishments/route.js
-import { sql } from '@vercel/postgres'
 import { NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth/next'
-import { authOptions } from '@/lib/auth'
 import { validateEstablishment } from '@/lib/validations'
+import { nanoid } from 'nanoid'
 
-// GET all establishments for current user
+// GET all establishments
 export async function GET(request) {
   try {
-    const session = await getServerSession(authOptions)
+    // In the Cloudflare Pages + Next.js setup, D1 is available on request.D1
+    // or may be available through a different mechanism depending on your setup
+    const DB = process.env.D1_DB || request.D1;
     
-    if (!session) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+    if (!DB) {
+      throw new Error('Database connection not available');
     }
-    
-    // Get user ID from session
-    const userId = session.user.id
     
     // Get query parameters
     const { searchParams } = new URL(request.url)
     const search = searchParams.get('search') || ''
+    const searchTerm = `%${search}%`
     
-    // Fetch establishments with search filter
-    const { rows } = await sql`
-      SELECT e.*
-      FROM establishments e
-      JOIN user_establishments ue ON e.id = ue.establishment_id
-      WHERE ue.user_id = ${userId}
-        AND (
-          e.name ILIKE ${`%${search}%`} OR
-          e.address ILIKE ${`%${search}%`} OR
-          e.city ILIKE ${`%${search}%`}
-        )
-      ORDER BY e.name ASC
-    `
+    // Fetch establishments using D1
+    const establishments = await DB.prepare(`
+      SELECT *
+      FROM establishments
+      WHERE 
+        name LIKE ? OR
+        address LIKE ? OR
+        city LIKE ?
+      ORDER BY name ASC
+    `).bind(searchTerm, searchTerm, searchTerm).all()
     
-    return NextResponse.json({ establishments: rows })
+    return NextResponse.json({ establishments: establishments.results || [] })
   } catch (error) {
     console.error('Error fetching establishments:', error)
     return NextResponse.json(
-      { error: 'Error fetching establishments' },
+      { error: 'Error fetching establishments: ' + error.message },
       { status: 500 }
     )
   }
@@ -51,17 +43,12 @@ export async function GET(request) {
 // CREATE a new establishment
 export async function POST(request) {
   try {
-    const session = await getServerSession(authOptions)
+    // Access database
+    const DB = process.env.D1_DB || request.D1;
     
-    if (!session) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+    if (!DB) {
+      throw new Error('Database connection not available');
     }
-    
-    // Get user ID from session
-    const userId = session.user.id
     
     // Get request body
     const body = await request.json()
@@ -75,37 +62,44 @@ export async function POST(request) {
       )
     }
     
-    // Create establishment in database
-    const { 
-      name, description, address, city, state, postal_code, country,
-      phone, email, website, is_active, place_id, google_place_data,
-      google_place_updated_at, logo_url, cover_image_url
-    } = body
+    // Generate a unique ID if not provided
+    const establishmentId = body.id || nanoid()
     
-    // Insert into establishments table
-    const { rows } = await sql`
+    // Get current timestamp in seconds (SQLite format)
+    const currentTimestamp = Math.floor(Date.now() / 1000)
+    
+    console.log('Creating establishment:', {
+      id: establishmentId,
+      name: body.name,
+      timestamp: currentTimestamp
+    })
+    
+    // Insert into establishments table using D1
+    await DB.prepare(`
       INSERT INTO establishments (
-        name, description, address, city, state, postal_code, country,
+        id, name, description, address, city, state, postal_code, country,
         phone, email, website, is_active, place_id, google_place_data,
-        google_place_updated_at, logo_url, cover_image_url, created_at, updated_at
-      ) VALUES (
-        ${name}, ${description || null}, ${address}, ${city}, ${state}, 
-        ${postal_code}, ${country}, ${phone || null}, ${email || null},
-        ${website || null}, ${is_active}, ${place_id || null}, 
-        ${google_place_data ? JSON.stringify(google_place_data) : null},
-        ${google_place_updated_at || null}, ${logo_url || null}, 
-        ${cover_image_url || null}, NOW(), NOW()
-      )
-      RETURNING id
-    `
-    
-    const establishmentId = rows[0].id
-    
-    // Associate establishment with user
-    await sql`
-      INSERT INTO user_establishments (user_id, establishment_id, role)
-      VALUES (${userId}, ${establishmentId}, 'owner')
-    `
+        google_place_updated_at, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(
+      establishmentId,
+      body.name, 
+      body.description || null, 
+      body.address, 
+      body.city, 
+      body.state, 
+      body.postal_code, 
+      body.country, 
+      body.phone || null, 
+      body.email || null,
+      body.website || null, 
+      body.is_active || 1, 
+      body.place_id || null, 
+      body.google_place_data || null,
+      body.google_place_updated_at || currentTimestamp, 
+      body.created_at || currentTimestamp, 
+      currentTimestamp
+    ).run()
     
     return NextResponse.json({ 
       message: 'Establishment created successfully',
@@ -115,7 +109,7 @@ export async function POST(request) {
   } catch (error) {
     console.error('Error creating establishment:', error)
     return NextResponse.json(
-      { error: 'Error creating establishment' },
+      { error: 'Error creating establishment: ' + error.message },
       { status: 500 }
     )
   }

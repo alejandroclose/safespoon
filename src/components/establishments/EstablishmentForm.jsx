@@ -5,49 +5,52 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { BuildingStorefrontIcon, MapPinIcon, PhoneIcon, EnvelopeIcon, GlobeAltIcon } from '@heroicons/react/24/outline'
 import { useSearchParams } from 'next/navigation'
+import { nanoid } from 'nanoid'
 
 export default function EstablishmentForm({ establishment }) {
   const router = useRouter()
   const [view, setView] = useState('google') // Default to Google Places view
   const [placeData, setPlaceData] = useState(null)
   const [googleLoaded, setGoogleLoaded] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState(null)
   const [formData, setFormData] = useState({
     name: establishment?.name || '',
     address: establishment?.address || '',
     city: establishment?.city || '',
     state: establishment?.state || '',
-    zipCode: establishment?.zipCode || '',
+    zipCode: establishment?.postal_code || '',
     country: establishment?.country || '',
     phone: establishment?.phone || '',
-    internationalPhone: establishment?.internationalPhone || '',
+    internationalPhone: establishment?.international_phone || '',
     email: establishment?.email || '',
     website: establishment?.website || '',
     description: establishment?.description || '',
-    placeId: establishment?.placeId || '',
-    businessStatus: establishment?.businessStatus || '',
-    formattedAddress: establishment?.formattedAddress || '',
+    placeId: establishment?.place_id || '',
+    businessStatus: establishment?.business_status || '',
+    formattedAddress: establishment?.formatted_address || '',
     vicinity: establishment?.vicinity || '',
-    utcOffset: establishment?.utcOffset || '',
-    wheelchairAccessible: establishment?.wheelchairAccessible || false,
-    priceLevel: establishment?.priceLevel || '',
+    utcOffset: establishment?.utc_offset || '',
+    wheelchairAccessible: establishment?.wheelchair_accessible || false,
+    priceLevel: establishment?.price_level || '',
     rating: establishment?.rating || '',
-    userRatingsTotal: establishment?.userRatingsTotal || '',
-    openingHours: establishment?.openingHours || '',
-    curbsidePickup: establishment?.curbsidePickup || false,
+    userRatingsTotal: establishment?.user_ratings_total || '',
+    openingHours: establishment?.opening_hours || '',
+    curbsidePickup: establishment?.curbside_pickup || false,
     delivery: establishment?.delivery || false,
-    dineIn: establishment?.dineIn || false,
+    dineIn: establishment?.dine_in || false,
     reservable: establishment?.reservable || false,
     takeout: establishment?.takeout || false,
-    servesBeer: establishment?.servesBeer || false,
-    servesWine: establishment?.servesWine || false,
-    servesBreakfast: establishment?.servesBreakfast || false,
-    servesBrunch: establishment?.servesBrunch || false,
-    servesLunch: establishment?.servesLunch || false, 
-    servesDinner: establishment?.servesDinner || false,
-    servesVegetarian: establishment?.servesVegetarian || false,
+    servesBeer: establishment?.serves_beer || false,
+    servesWine: establishment?.serves_wine || false,
+    servesBreakfast: establishment?.serves_breakfast || false,
+    servesBrunch: establishment?.serves_brunch || false,
+    servesLunch: establishment?.serves_lunch || false, 
+    servesDinner: establishment?.serves_dinner || false,
+    servesVegetarian: establishment?.serves_vegetarian || false,
     latitude: establishment?.latitude || '',
     longitude: establishment?.longitude || '',
-    isActive: establishment?.isActive !== false // Default to true if not specified
+    isActive: establishment?.is_active !== 0 // SQLite uses 0/1 for booleans
   })
   
   const autoCompleteRef = useRef(null)
@@ -180,23 +183,94 @@ export default function EstablishmentForm({ establishment }) {
   
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
-    // Here you would submit the form data to your API
-    console.log('Submitting establishment data:', formData)
+    setIsSubmitting(true)
+    setError(null)
     
     try {
-      // Replace with actual API call
-      // const response = await fetch('/api/establishments', {
-      //   method: establishment ? 'PUT' : 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData)
-      // })
-      // const data = await response.json()
+      // Transform form data to match your schema
+      const googlePlaceData = {
+        business_status: formData.businessStatus,
+        formatted_address: formData.formattedAddress,
+        vicinity: formData.vicinity,
+        utc_offset: formData.utcOffset,
+        wheelchair_accessible_entrance: formData.wheelchairAccessible,
+        price_level: formData.priceLevel ? parseInt(formData.priceLevel) : null,
+        rating: formData.rating ? parseFloat(formData.rating) : null,
+        user_ratings_total: formData.userRatingsTotal ? parseInt(formData.userRatingsTotal) : null,
+        opening_hours: formData.openingHours ? JSON.parse(formData.openingHours) : null,
+        curbside_pickup: formData.curbsidePickup,
+        delivery: formData.delivery,
+        dine_in: formData.dineIn,
+        reservable: formData.reservable,
+        takeout: formData.takeout,
+        serves_beer: formData.servesBeer,
+        serves_wine: formData.servesWine,
+        serves_breakfast: formData.servesBreakfast,
+        serves_brunch: formData.servesBrunch,
+        serves_lunch: formData.servesLunch,
+        serves_dinner: formData.servesDinner,
+        serves_vegetarian_food: formData.servesVegetarian
+      }
+      
+      // Add geometry data if lat/lng are available
+      if (formData.latitude && formData.longitude) {
+        googlePlaceData.geometry = {
+          location: {
+            lat: parseFloat(formData.latitude),
+            lng: parseFloat(formData.longitude)
+          }
+        }
+      }
+      
+      const currentTimestamp = Math.floor(Date.now() / 1000); // Unix timestamp in seconds
+      
+      const apiData = {
+        id: establishment?.id || nanoid(), // Use existing ID or generate a new one
+        name: formData.name,
+        description: formData.description,
+        address: formData.address,
+        city: formData.city,
+        state: formData.state,
+        postal_code: formData.zipCode,
+        country: formData.country,
+        phone: formData.phone,
+        email: formData.email,
+        website: formData.website,
+        is_active: formData.isActive ? 1 : 0, // Use 1/0 for SQLite boolean
+        place_id: formData.placeId,
+        google_place_data: JSON.stringify(googlePlaceData),
+        google_place_updated_at: currentTimestamp,
+        created_at: establishment?.created_at || currentTimestamp,
+        updated_at: currentTimestamp
+      }
+      
+      console.log('Submitting establishment data to API:', apiData)
+      
+      // Make the actual API call
+      const url = establishment ? `/api/establishments/${establishment.id}` : '/api/establishments'
+      const method = establishment ? 'PUT' : 'POST'
+      
+      const response = await fetch(url, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(apiData)
+      })
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to save establishment')
+      }
+      
+      const data = await response.json()
+      console.log('API response:', data)
       
       // Navigate back to establishments list
       router.push('/dashboard/establishments')
     } catch (error) {
       console.error('Error saving establishment:', error)
+      setError(error.message || 'An error occurred while saving. Please try again.')
+    } finally {
+      setIsSubmitting(false)
     }
   }
   
@@ -239,6 +313,14 @@ export default function EstablishmentForm({ establishment }) {
             Google Places Search
           </button>
         </div>
+        
+        {/* Error message */}
+        {error && (
+          <div className="mb-6 p-4 border border-red-300 bg-red-50 text-red-800 rounded-md">
+            <p className="font-medium">Error</p>
+            <p>{error}</p>
+          </div>
+        )}
         
         <form className="space-y-6" onSubmit={handleSubmit}>
           {view === 'google' && (
@@ -686,14 +768,16 @@ export default function EstablishmentForm({ establishment }) {
               type="button"
               className="px-4 py-2 border rounded-md"
               onClick={() => router.push('/dashboard/establishments')}
+              disabled={isSubmitting}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-teal-900 text-white rounded-md hover:bg-teal-800"
+              className="px-4 py-2 bg-teal-900 text-white rounded-md hover:bg-teal-800 disabled:bg-teal-300"
+              disabled={isSubmitting}
             >
-              {establishment ? 'Update Establishment' : 'Create Establishment'}
+              {isSubmitting ? 'Saving...' : establishment ? 'Update Establishment' : 'Create Establishment'}
             </button>
           </div>
         </form>

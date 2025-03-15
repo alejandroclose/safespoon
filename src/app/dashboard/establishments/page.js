@@ -5,13 +5,10 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
     PlusIcon,
-    PencilIcon,
-    TrashIcon,
     ArrowPathIcon,
     MapPinIcon,
     PhoneIcon,
     EnvelopeIcon,
-    UserIcon,
     EllipsisHorizontalIcon,
     BuildingStorefrontIcon
 } from '@heroicons/react/24/outline'
@@ -22,6 +19,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Input } from '@/components/ui/input'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
+import { toast } from 'sonner' // Updated to use sonner
 
 export default function EstablishmentsPage() {
     const [isLoading, setIsLoading] = useState(true)
@@ -29,59 +27,51 @@ export default function EstablishmentsPage() {
     const [searchQuery, setSearchQuery] = useState('')
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const [establishmentToDelete, setEstablishmentToDelete] = useState(null)
+    const [error, setError] = useState(null)
 
     useEffect(() => {
-        const fetchEstablishments = async () => {
-            try {
-                // Replace with actual API call
-                // const response = await fetch('/api/establishments')
-                // const data = await response.json()
-
-                // Simulated data
-                const data = [
-                    {
-                        id: 'est1',
-                        name: 'The Green Bistro',
-                        address: '123 Main St, Anytown, CA 90210',
-                        phone: '(555) 123-4567',
-                        email: 'contact@greenbistro.com',
-                        owners: [
-                            { id: 'user1', name: 'Jane Smith' }
-                        ],
-                        activeMenus: 2
-                    },
-                    {
-                        id: 'est2',
-                        name: 'Oceanside Restaurant',
-                        address: '456 Beach Dr, Seaside, FL 33139',
-                        phone: '(555) 987-6543',
-                        email: 'info@oceanside.com',
-                        owners: [
-                            { id: 'user1', name: 'Jane Smith' }
-                        ],
-                        activeMenus: 1
-                    }
-                ]
-
-                setEstablishments(data)
-                setIsLoading(false)
-            } catch (error) {
-                console.error('Error fetching establishments:', error)
-                setIsLoading(false)
-            }
-        }
-
         fetchEstablishments()
     }, [])
+
+    const fetchEstablishments = async () => {
+        setIsLoading(true)
+        setError(null)
+        
+        try {
+            // Construct the URL with search parameters if provided
+            const url = searchQuery.trim() 
+                ? `/api/establishments?search=${encodeURIComponent(searchQuery)}` 
+                : '/api/establishments'
+                
+            const response = await fetch(url)
+            
+            if (!response.ok) {
+                throw new Error('Failed to fetch establishments')
+            }
+            
+            const data = await response.json()
+            setEstablishments(data.establishments || [])
+        } catch (error) {
+            console.error('Error fetching establishments:', error)
+            setError('Failed to load establishments. Please try again.')
+            
+            // Toast notification for error (using sonner)
+            toast.error('Error loading establishments', {
+                description: error.message
+            })
+        } finally {
+            setIsLoading(false)
+        }
+    }
 
     const handleSearch = (e) => {
         setSearchQuery(e.target.value)
     }
 
-    const filteredEstablishments = establishments.filter(est =>
-        est.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        est.address.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+    const handleSearchSubmit = (e) => {
+        e.preventDefault()
+        fetchEstablishments()
+    }
 
     const confirmDelete = (establishment) => {
         setEstablishmentToDelete(establishment)
@@ -90,22 +80,47 @@ export default function EstablishmentsPage() {
 
     const handleDelete = async () => {
         try {
-            // Replace with actual API call
-            // await fetch(`/api/establishments/${establishmentToDelete.id}`, {
-            //   method: 'DELETE'
-            // })
+            const response = await fetch(`/api/establishments/${establishmentToDelete.id}`, {
+                method: 'DELETE'
+            })
+            
+            if (!response.ok) {
+                throw new Error('Failed to delete establishment')
+            }
 
             // Update local state
             setEstablishments(prev =>
                 prev.filter(est => est.id !== establishmentToDelete.id)
             )
 
+            // Toast notification for success (using sonner)
+            toast.success('Establishment deleted', {
+                description: `${establishmentToDelete.name} has been removed.`
+            })
+            
             setDeleteDialogOpen(false)
             setEstablishmentToDelete(null)
         } catch (error) {
             console.error('Error deleting establishment:', error)
+            
+            // Toast notification for error (using sonner)
+            toast.error('Error deleting establishment', {
+                description: error.message
+            })
         }
     }
+
+    // Format date timestamp (Unix seconds) to readable format
+    const formatDate = (timestamp) => {
+        if (!timestamp) return 'N/A';
+        
+        const date = new Date(timestamp * 1000); // Convert seconds to milliseconds
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    };
 
     return (
         <DashboardLayout>
@@ -125,7 +140,7 @@ export default function EstablishmentsPage() {
                     </Button>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+                <form onSubmit={handleSearchSubmit} className="flex flex-col sm:flex-row gap-4 items-center justify-between">
                     <div className="relative w-full max-w-sm">
                         <Input
                             type="search"
@@ -150,11 +165,24 @@ export default function EstablishmentsPage() {
                         </svg>
                     </div>
 
-                    <Button variant="outline" size="sm" className="flex gap-1 self-end">
-                        <ArrowPathIcon className="size-4" />
-                        Refresh
+                    <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex gap-1 self-end"
+                        onClick={fetchEstablishments}
+                        disabled={isLoading}
+                    >
+                        <ArrowPathIcon className={`size-4 ${isLoading ? 'animate-spin' : ''}`} />
+                        {isLoading ? 'Loading...' : 'Refresh'}
                     </Button>
-                </div>
+                </form>
+
+                {error && (
+                    <div className="p-4 text-red-700 bg-red-50 border border-red-200 rounded-md">
+                        {error}
+                    </div>
+                )}
 
                 {isLoading ? (
                     <div className="flex items-center justify-center h-64">
@@ -163,9 +191,9 @@ export default function EstablishmentsPage() {
                             <p className="text-gray-500">Loading establishments...</p>
                         </div>
                     </div>
-                ) : filteredEstablishments.length > 0 ? (
+                ) : establishments.length > 0 ? (
                     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                        {filteredEstablishments.map((establishment) => (
+                        {establishments.map((establishment) => (
                             <Card key={establishment.id}>
                                 <CardHeader className="pb-2">
                                     <div className="flex justify-between">
@@ -211,28 +239,44 @@ export default function EstablishmentsPage() {
                                         </DropdownMenu>
                                     </div>
                                     <CardDescription>
-                                        <Badge variant="outline" className="bg-teal-50">
-                                            {establishment.activeMenus} active {establishment.activeMenus === 1 ? 'menu' : 'menus'}
-                                        </Badge>
+                                        {establishment.is_active ? (
+                                            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                                                Active
+                                            </Badge>
+                                        ) : (
+                                            <Badge variant="outline" className="bg-gray-50 text-gray-700 border-gray-200">
+                                                Inactive
+                                            </Badge>
+                                        )}
+                                        <span className="ml-2 text-xs text-gray-500">
+                                            Added {formatDate(establishment.created_at)}
+                                        </span>
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-2 text-sm text-gray-500 pb-1">
                                     <div className="flex items-start gap-2">
                                         <MapPinIcon className="size-4 shrink-0 mt-0.5" />
-                                        <span>{establishment.address}</span>
+                                        <span>
+                                            {[
+                                                establishment.address,
+                                                establishment.city,
+                                                establishment.state,
+                                                establishment.postal_code
+                                            ].filter(Boolean).join(', ')}
+                                        </span>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <PhoneIcon className="size-4 shrink-0" />
-                                        <span>{establishment.phone}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <EnvelopeIcon className="size-4 shrink-0" />
-                                        <span>{establishment.email}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <UserIcon className="size-4 shrink-0" />
-                                        <span>{establishment.owners.map(owner => owner.name).join(', ')}</span>
-                                    </div>
+                                    {establishment.phone && (
+                                        <div className="flex items-center gap-2">
+                                            <PhoneIcon className="size-4 shrink-0" />
+                                            <span>{establishment.phone}</span>
+                                        </div>
+                                    )}
+                                    {establishment.email && (
+                                        <div className="flex items-center gap-2">
+                                            <EnvelopeIcon className="size-4 shrink-0" />
+                                            <span>{establishment.email}</span>
+                                        </div>
+                                    )}
                                 </CardContent>
                                 <CardFooter className="pt-2">
                                     <div className="flex gap-2 w-full">

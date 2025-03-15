@@ -152,7 +152,7 @@ export default function MenuTemplate() {
     }
     acc[item.category].push(item)
     return acc
-  }, {})
+  }, [selectedAllergens, hideAllergenic, containsSelectedAllergens, menuItems])
 
   // Reset all filters
   const resetFilters = () => {

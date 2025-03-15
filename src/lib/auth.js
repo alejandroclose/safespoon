@@ -2,8 +2,7 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
-import { getDatabase } from '@/db/db';
-import { eq } from 'drizzle-orm';
+import { getD1, getOne } from '@/db/db';
 
 export const authOptions = {
   providers: [
@@ -13,32 +12,27 @@ export const authOptions = {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" }
       },
-      async authorize(credentials, req) {
+      async authorize(credentials, context) {
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
         
         try {
-          // Get database instance
-          const db = getDatabase(process.env);
+          // Get D1 database instance
+          const db = getD1(context);
           
-          if (!db) {
-            console.error('Database connection failed in auth');
-            throw new Error('Database connection failed');
-          }
-          
-          // Query user by email using drizzle syntax
-          const result = await db.select()
-            .from('users')
-            .where(eq('email', credentials.email))
-            .limit(1);
-          
-          const user = result[0];
+          // Find user by email
+          const user = await getOne(
+            db, 
+            `SELECT * FROM users WHERE email = ? LIMIT 1`,
+            [credentials.email]
+          );
           
           if (!user || !user.password) {
             return null;
           }
           
+          // Verify password
           const isPasswordValid = await bcrypt.compare(
             credentials.password,
             user.password
@@ -48,6 +42,7 @@ export const authOptions = {
             return null;
           }
           
+          // Return user data for token
           return {
             id: user.id,
             name: user.name,

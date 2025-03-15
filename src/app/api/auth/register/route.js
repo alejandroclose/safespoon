@@ -2,9 +2,9 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { nanoid } from 'nanoid';
-import { getDatabase } from '@/db/db';
+import { getD1, execQuery, getOne, execWrite } from '@/db/db';
 
-export async function POST(request) {
+export async function POST(request, context) {
   try {
     console.log('Registration endpoint called');
     
@@ -21,78 +21,70 @@ export async function POST(request) {
     }
     
     // Get database connection
-    const db = getDatabase(process.env);
-    
-    if (!db) {
-      console.error('Database connection failed in registration');
-      return NextResponse.json(
-        { error: 'Database connection failed' }, 
-        { status: 500 }
-      );
-    }
-    
-    // Check if email already exists
     try {
-      const existingUsers = await db.query.users.findMany({
-        where: (users, { eq }) => eq(users.email, email),
-        limit: 1
-      });
+      const db = getD1(context);
       
-      if (existingUsers.length > 0) {
+      // Check if email already exists
+      const existingUser = await getOne(
+        db,
+        `SELECT * FROM users WHERE email = ? LIMIT 1`,
+        [email]
+      );
+      
+      if (existingUser) {
         console.log('Email already exists:', email);
         return NextResponse.json(
           { error: 'Email already exists' }, 
           { status: 409 }
         );
       }
-    } catch (queryError) {
-      console.error('Error checking existing user:', queryError);
-      return NextResponse.json(
-        { error: 'Error checking existing user' }, 
-        { status: 500 }
+      
+      // Hash password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      
+      // Generate user ID
+      const userId = nanoid();
+      
+      // Create timestamp (Unix timestamp in seconds)
+      const timestamp = Math.floor(Date.now() / 1000);
+      
+      // Insert the new user
+      await execWrite(
+        db,
+        `INSERT INTO users (
+          id, name, email, password, user_type, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+          userId,
+          name,
+          email,
+          hashedPassword,
+          'establishment_owner',
+          timestamp,
+          timestamp
+        ]
       );
-    }
-    
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    
-    // Generate user ID
-    const userId = nanoid();
-    
-    // Create timestamp
-    const timestamp = Math.floor(Date.now() / 1000);
-    
-    // Create user
-    try {
-      await db.insert(db.schema.users).values({
-        id: userId,
-        name,
-        email,
-        password: hashedPassword,
-        user_type: 'establishment_owner',
-        created_at: timestamp,
-        updated_at: timestamp
-      });
+      
       console.log('User created successfully:', userId);
-    } catch (insertError) {
-      console.error('Error creating user:', insertError);
+      
+      // Return success
+      return NextResponse.json({ 
+        success: true,
+        user: {
+          id: userId,
+          name,
+          email
+        }
+      }, { status: 201 });
+      
+    } catch (dbError) {
+      console.error('Database error:', dbError);
       return NextResponse.json(
-        { error: 'Failed to create user account', details: insertError.message }, 
+        { error: 'Database error', details: dbError.message }, 
         { status: 500 }
       );
     }
-    
-    // Return success
-    return NextResponse.json({ 
-      success: true,
-      user: {
-        id: userId,
-        name,
-        email
-      }
-    }, { status: 201 });
-    
   } catch (error) {
     console.error('Registration handler error:', error);
     return NextResponse.json(

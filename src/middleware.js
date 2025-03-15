@@ -23,31 +23,45 @@ export async function middleware(request) {
   // Get the pathname from the URL
   const { pathname } = request.nextUrl;
   
-  // If it's not a protected route, allow the request to proceed
-  if (!isProtectedRoute(pathname)) {
-    return NextResponse.next();
-  }
-  
-  const token = await getToken({ 
-    req: request,
-    secret: process.env.NEXTAUTH_SECRET
-  });
-  
-  // If not authenticated, redirect to login page
-  if (!token) {
-    const url = new URL('/login', request.url);
-    url.searchParams.set('callbackUrl', encodeURI(request.url));
-    return NextResponse.redirect(url);
-  }
-  
-  // Check role-based access if needed
-  if (isRoleProtectedRoute(pathname)) {
-    const userRole = token.role;
-    const allowedRoles = getRolesForRoute(pathname);
+  // Handle auth routes protection
+  if (isProtectedRoute(pathname)) {
+    const token = await getToken({ 
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET
+    });
     
-    if (!allowedRoles.includes(userRole) && userRole !== 'admin') {
-      return NextResponse.redirect(new URL('/unauthorized', request.url));
+    // If not authenticated, redirect to login page
+    if (!token) {
+      const url = new URL('/login', request.url);
+      url.searchParams.set('callbackUrl', encodeURI(request.url));
+      return NextResponse.redirect(url);
     }
+    
+    // Check role-based access if needed
+    if (isRoleProtectedRoute(pathname)) {
+      const userRole = token.role;
+      const allowedRoles = getRolesForRoute(pathname);
+      
+      if (!allowedRoles.includes(userRole) && userRole !== 'admin') {
+        return NextResponse.redirect(new URL('/unauthorized', request.url));
+      }
+    }
+  }
+
+  // For API routes, add D1 to the request
+  if (pathname.startsWith('/api/')) {
+    // Clone the request headers
+    const requestHeaders = new Headers(request.headers);
+    
+    // Forward the request with DB access
+    const response = NextResponse.next({
+      request: {
+        // Pass along the request headers
+        headers: requestHeaders,
+      },
+    });
+    
+    return response;
   }
   
   // Allow the request to proceed
@@ -92,7 +106,6 @@ function getRolesForRoute(pathname) {
 export const config = {
   matcher: [
     '/dashboard/:path*',
-    '/api/establishments/:path*',
-    '/api/menus/:path*',
+    '/api/:path*',
   ]
 };

@@ -2,6 +2,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Clock, ShieldCheck, RefreshCw, FileText, ChevronRight } from "lucide-react"
+import { AuthStatus } from "@/components/auth/AuthStatus"
 
 export default function Home() {
   return (
